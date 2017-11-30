@@ -11,27 +11,27 @@ overwritten with the new data (unless the --output-x arguments are used)
 ```
 usage: generate-lights.py [-h] [-x X_OFFSET] [-y Y_OFFSET] [-w] [-u]
                           [--output-map OUTPUT_MAP]
-						  [--output-world OUTPUT_WORLD]
-			              map world
+			  [--output-world OUTPUT_WORLD]
+			  map world
 
 positional arguments:
         map                   The map file to use or update
-		world                 The gazebo world file to update
+	world                 The gazebo world file to update
 
 optional arguments:
-	    -h, --help            show this help message and exit
+	-h, --help            show this help message and exit
         -x X_OFFSET, --x-offset X_OFFSET
-	           				  The x translation of coordinates in the map to the
-	           				  gazebo world
-		-y Y_OFFSET, --y-offset Y_OFFSET
-	                          The y translation of coordinates in the map to the 
-	                          gazebo world
+	  		      The x translation of coordinates in the map to the
+	           	      gazebo world
+	-y Y_OFFSET, --y-offset Y_OFFSET
+	                      The y translation of coordinates in the map to the 
+	                      gazebo world
         -w, --use-waypoints   Use the waypoints to create the lights, otherwise use
-		                      the light definitions in the map
-		-u, --update-map      After placing the lights, update the map
-		--output-map OUTPUT_MAP
-		                      When updating the map, put it in this file
-		--output-world OUTPUT_WORLD
-		                      When updating the world, put it in this file
+	                      the light definitions in the map
+	-u, --update-map      After placing the lights, update the map
+	--output-map OUTPUT_MAP
+	                      When updating the map, put it in this file
+	--output-world OUTPUT_WORLD
+	                      When updating the world, put it in this file
 ```
 
