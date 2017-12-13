@@ -69,6 +69,9 @@ def create_wall(id, x1, y1, x2, y2, origin=None, target=None):
 		y1 = y2
 		y2 = yt
 		x2 = xt
+	x = math.sqrt((x2-x1)**2 + (y2-y1)**2)
+	if (x == 0):
+		None
 
 	if not target is None and not origin is None:
 		wall_id = "Wall_%sto%s_%s" %(origin,target,id)
@@ -83,7 +86,6 @@ def create_wall(id, x1, y1, x2, y2, origin=None, target=None):
 
 	z = 2.5
 	y = 0.15
-	x = math.sqrt((x2-x1)**2 + (y2-y1)**2)
 
 	size.appendChild(wall_dom.createTextNode("%s %s %s" %(x, y, z)))
 	box.appendChild(size)
@@ -136,6 +138,10 @@ def get_walls_use_waypoints(map_json):
 				wall["target"] = tl
 				walls.append(wall)
 
+	return walls
+
+def get_walls_from_map(map_json):
+	walls = map_json["walls"]
 	return walls
 
 def process_world(models, append):
@@ -196,15 +202,16 @@ models = world_dom.getElementsByTagName("model")
 
 map_json = load_map(args.map)
 
-walls = get_walls_use_waypoints(map_json)
+walls = get_walls_from_map(map_json)
 walls_doms = []
 
 
 
 for wall in walls:
-	wall_dom = create_wall(cur_wall_id, wall["p1"]["x"] + args.x_offset, wall["p1"]["y"] + args.y_offset, wall["p2"]["x"] + args.x_offset, wall["p2"]["y"] + args.y_offset, wall["origin"], wall["target"])
-	cur_wall_id = cur_wall_id + 1
-	room_model.appendChild(wall_dom.firstChild)
+	wall_dom = create_wall(cur_wall_id, wall["p1"]["x"] + args.x_offset, wall["p1"]["y"] + args.y_offset, wall["p2"]["x"] + args.x_offset, wall["p2"]["y"] + args.y_offset)
+	if wall_dom is not None:
+		cur_wall_id = cur_wall_id + 1
+		room_model.appendChild(wall_dom.firstChild)
 
 
 with open(args.output, 'w') as f:

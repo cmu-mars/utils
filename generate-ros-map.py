@@ -73,8 +73,8 @@ def process_args():
 def draw_walls(draw, map, scale, line_width, tx, ty):
 	walls = map["walls"]
 	for wall in walls:
-		l = (int (math.floor(tx + float(wall["p1"]["x"]))) * scale, int(math.floor(ty + float(wall["p1"]["y"]))) * scale, 
-			int(math.floor(tx + float(wall["p2"]["x"]))) * scale, int(math.floor(ty + float(wall["p2"]["y"]))) * scale)
+		l = (int (math.floor(tx + wall["p1"]["x"])) * scale, int(math.floor(ty + wall["p1"]["y"])) * scale, 
+			int(math.floor(tx + wall["p2"]["x"])) * scale, int(math.floor(ty + wall["p2"]["y"])) * scale)
 		draw.line (l, 
 			fill = 'black', width=line_width)
 
@@ -95,15 +95,16 @@ draw = ImageDraw.Draw(im)
 draw_walls (draw, map_json, args.scale, args.line_width, tx, ty)
 del draw
 im = im.transpose(Image.FLIP_TOP_BOTTOM)
-im.save (args.output_dir + "/%s.png" %args.ros_mapname, "PNG")
+width, height = im.size
 
+im.save (args.output_dir + "/%s.png" %args.ros_mapname, "PNG")
 # Save map.yaml too
-with open(args.output_dir + "/map.yaml", 'w') as mapfile:
+with open(args.output_dir + "/%s.yaml" % args.ros_mapname, 'w') as mapfile:
 	print('image: %s.png' %args.ros_mapname, file=mapfile)
 	print('resolution: %s' %float(1.0/args.scale), file=mapfile)
 	print('origin: [%s, %s, 0]' 
-		%(map_json["origin"][0]["x"] * args.scale, map_json["origin"][0]["y"] * args.scale), 
-		file=mapfile)
+		%(-tx, -ty), 
+		file=mapfile) # Assumes this is in meters not pixels
 	print('occupied_thresh: 0.65', file=mapfile)
 	print('free_thresh: 0.196', file=mapfile)
 	print('negate: 0', file=mapfile)
