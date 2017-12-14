@@ -27,7 +27,7 @@ def translate_waypoints_to_lights(map):
     for wp in waypoints:
         light_id = 'light%s' % curr_id
         curr_id = curr_id + 1
-        light_coord = wp["coord"]
+        light_coord = wp["coords"]
         light = {'light-id' : light_id, 'coord' : light_coord}
         lights.append(light)
 
