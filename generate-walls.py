@@ -70,8 +70,8 @@ def create_wall(id, x1, y1, x2, y2, origin=None, target=None):
 		y2 = yt
 		x2 = xt
 	x = math.sqrt((x2-x1)**2 + (y2-y1)**2)
-	if (x == 0):
-		None
+	if x == 0 or math.isnan(x):
+		return None
 
 	if not target is None and not origin is None:
 		wall_id = "Wall_%sto%s_%s" %(origin,target,id)

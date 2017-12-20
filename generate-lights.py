@@ -64,7 +64,7 @@ def create_light(dom, light_json, xtrans, ytrans, for_world=True):
         light.appendChild(attenuation)
 
         rangE = dom.createElement("range")
-        rangE.appendChild(dom.createTextNode("20"))
+        rangE.appendChild(dom.createTextNode("5"))
         attenuation.appendChild(rangE)
 
         constant = dom.createElement("constant")
@@ -72,11 +72,11 @@ def create_light(dom, light_json, xtrans, ytrans, for_world=True):
         attenuation.appendChild(constant)
 
         linear = dom.createElement("linear")
-        linear.appendChild(dom.createTextNode("0.01"))
+        linear.appendChild(dom.createTextNode("0.1"))
         attenuation.appendChild(linear)
 
         quadratic = dom.createElement("quadratic")
-        quadratic.appendChild(dom.createTextNode("0.01"))
+        quadratic.appendChild(dom.createTextNode("0.03"))
         attenuation.appendChild(quadratic)
 
         cast = dom.createElement("cast_shadows")
