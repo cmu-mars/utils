@@ -91,8 +91,8 @@ def create_light(dom, light_json, xtrans, ytrans, for_world=True):
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-x', '--x-offset', type=float, default=-56.0, help='The x translation of coordinates in the map to the gazebo world')
-parser.add_argument('-y', '--y-offset', type=float, default=-42.0, help='The y translation of coordinates in the map to the gazebo world')
+parser.add_argument('-x', '--x-offset', type=float, default=-0.0, help='The x translation of coordinates in the map to the gazebo world')
+parser.add_argument('-y', '--y-offset', type=float, default=0.0, help='The y translation of coordinates in the map to the gazebo world')
 parser.add_argument('-w', '--use-waypoints', help='Use the waypoints to create the lights, otherwise use the light definitions in the map', action='store_true')
 parser.add_argument('-u', '--update-map', help='After placing the lights, update the map', action='store_true')
 parser.add_argument('--output-map', type=str, help='When updating the map, put it in this file')

@@ -87,8 +87,6 @@ map_json = load_map(args.map_data)
 tx, ty, width, height = get_map_bounding_box(map_json)
 print ("transpose %s, %s size=%s %s" %(str(tx), str(ty), str(width), str(height)))
 
-args.line_width = 3
-
 im = Image.new ('RGBA', (width * args.scale + args.line_width * args.scale, height*args.scale + args.line_width * args.scale), (255, 255, 255))
 draw = ImageDraw.Draw(im)
 

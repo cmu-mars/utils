@@ -167,8 +167,8 @@ def process_world(models, append):
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-x', '--x-offset', type=float, default=-56.0, help='The x translation of coordinates in the map to the gazebo world')
-parser.add_argument('-y', '--y-offset', type=float, default=-42.0, help='The y translation of coordinates in the map to the gazebo world')
+parser.add_argument('-x', '--x-offset', type=float, default=0.0, help='The x translation of coordinates in the map to the gazebo world')
+parser.add_argument('-y', '--y-offset', type=float, default=0.0, help='The y translation of coordinates in the map to the gazebo world')
 parser.add_argument('-a', '--append', action='store_true', help='Append the walls rather than overwrite' )
 parser.add_argument('-o', '--output', type=str, help='The output file to use')
 parser.add_argument('map', help='The map file used to create the walls')
