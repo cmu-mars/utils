@@ -1,0 +1,56 @@
+<html>
+	<head>
+		<meta charset="utf-8"/>
+		<title>aruco markers</title>
+		<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width-device-width"/>
+		<style type="text/css">
+			canvas {
+				margin: 0px;
+				display: block;
+			}
+		</style>
+	</head>
+	<body>
+		<div align=center>
+			<div id="links"></div>
+			<div id="markers"></div>
+		</div>
+		<script type="text/javascript" src="cv.js"></script>
+		<script type="text/javascript" src="aruco.js"></script>
+		<script type="text/javascript" src="markers.js"></script>
+		<script type="text/javascript">
+			window.onload = function () {
+				var marker_size_mm = 500;
+				var marker_padding_mm = 0;
+				var error_str = "";
+
+				var div = document.getElementById("markers");
+				var links = document.getElementById("links");
+				for (var i = 128; i < 256; i++) {
+
+					canvas = makeMarker(i, marker_size_mm, marker_padding_mm);
+					var ctx = canvas.getContext('2d');
+					ctx.strokeStyle = 'black';
+					ctx.rect(0,0,canvas.height,canvas.width);
+					ctx.stroke();
+					div.appendChild(canvas);
+
+					link = document.createElement('a');
+					link.innerHTML = 'Marker' + i;
+					link.addEventListener('click', function(ev) {
+
+						// canvas = makeMarker(i, marker_size_mm, marker_padding_mm);
+						// var ctx = canvas.getContext('2d');
+						// ctx.strokeStyle = 'black';
+						// ctx.rect(0,0,canvas.height,canvas.width);
+						// ctx.stroke();
+						link.href = canvas.toDataURL();
+						link.download = 'marker' + id + ".png";
+					}, false);
+					div.appendChild(link);
+				}
+			}
+
+		</script>
+	</body>
+</html>
