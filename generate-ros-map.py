@@ -43,7 +43,7 @@ def process_args():
 	parser.add_argument('map_data', help='The JSON map file to use to base the ROS map on')
 	parser.add_argument('ros_mapname', help='The prefix for map related ROS files')
 	parser.add_argument('-c', '--create', action='store_true', help='Create output dir if it does not exist')
-	parser.add_argument('-l' , '--line_width',default = 3, help='The width of wall lines')
+	parser.add_argument('-l' , '--line_width', type=int, default = 3, help='The width of wall lines')
 	args = parser.parse_args()
 
 	args.map_data = os.path.expandvars(args.map_data)
