@@ -1,4 +1,9 @@
 #! /user/bin/env python
+'''
+Generates Gazebo models for visual markers by manipulating files
+in a template directory. Requires png files that are numbered, and 
+generated from Aruco image generators.
+'''
 from __future__ import print_function
 
 import argparse
