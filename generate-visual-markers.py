@@ -7,7 +7,7 @@ from xml.dom.minidom import parse
 import os
 import sys
 import json
-
+import math
 
 def process_args():
     parser = argparse.ArgumentParser()
@@ -75,30 +75,70 @@ def create_marker(mid, dom, marker_json, height):
     x = marker_json["x"]
     y = marker_json["y"]
     z = height
+    translate = "translated" not in keys or not marker_json["translated"]
     w = 0
 
     if on_wall == "north":
-        y = y + 0.15
+        if translate:
+            y = y + 0.1
         w = -math.pi / 2
     elif on_wall == "south":
-        y = y - 0.15
+        if translate:
+            y = y - 0.1
         w = math.pi / 2
     elif on_wall == "east":
-        x = x - 0.15
+        if translate:   
+            x = x - 0.125
         w = math.pi
     elif on_wall == "west":
-        x = x + 0.15
+        if translate:
+            x = x + 0.05
         w = 0
     else:
         print("Marker is not on a wall!?")
 
-    pose_text = "%s %s %s 0 %s 0" %(x,y,z,w)
+    pose_text = "%s %s %s 0 0 %s" %(x,y,z,w)
     pose = dom.createElement("pose")
     pose.setAttribute("frame", "")
     pose.appendChild(dom.createTextNode(pose_text))
     markerXML.appendChild(pose)
 
-    return markerXML
+    # stateXML = dom.createElement("model")
+    # pose = dom.createElement("pose")
+    # stateXML.appendChild(pose)
+    # pose.appendChild(dom.createTextNode(pose_text))
+
+    # scale = dom.createElement("scale")
+    # scale.appendChild(dom.createTextNode("1 1 1"))
+    # stateXML.appendChild(scale)
+
+    # link = dom.createElement('link')
+    # link.setAttribute('name', 'link')
+    # stateXML.appendChild(link)
+
+    # pose = dom.createElement("pose")
+    # pose.setAttribute('frame', '')
+    # link.appendChild(pose)
+    # pose.appendChild(dom.createTextNode(pose_text))
+
+    # velocity = dom.createElement("velocity")
+    # link.appendChild(velocity)
+    # velocity.appendChild(dom.createTextNode("0 0 0 0 0 0"))
+    # accel = dom.createElement("accelaration")
+    # link.appendchild(accel)
+    # accel.appendChild(dom.createTextNode("0 0 0 0 0 0"))
+    # wrench = dom.createElement("") 
+
+    return markerXML, None
+
+def remove_old_markers(world, state):
+    for child in world.childNodes:
+        if child.nodeName == "model" and child.getAttribute("name").startswith("Marker"):
+            world.removeChild(child)
+
+    for child in state.childNodes:
+        if child.nodeName == "model" and child.getAttribute("name").startswith("Marker"):
+            state.removeChild(child)
 
 def load_json(filename):
     f = open(filename)
@@ -109,16 +149,21 @@ if __name__ == '__main__':
     args = process_args()
 
     world_dom = parse(args.world)
-    markers = load_data(args.data)
+    markers = load_json(args.data)
 
-    world = world_dom.getElementsByTagName("world")
+    world = world_dom.getElementsByTagName("world")[0]
+    state = world_dom.getElementsByTagName("state")[0]
 
+    remove_old_markers(world, state)
 
     mid = 0
     for marker in markers:
-        vm = create_marker(mid, world_dom, marker, 0.75)
+        vmm, vms = create_marker(mid, world_dom, marker, 0.75)
         mid = mid + 1
-        world[0].appendChild(vm)
+        world.appendChild(vmm)
+        if mid > 50:
+             break
+        #state.appendChild(vms)
 
     world_dom.writexml(open(args.output, 'w'), indent='  ', addindent='  ', newl='\n')
     world_dom.unlink()

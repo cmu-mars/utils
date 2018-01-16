@@ -98,6 +98,7 @@ def construct_visual_marker_data(map_image, map_data, output, tx, ty, scale):
 	ImageDraw.floodfill(corr_image, (tx * scale,ty * scale), (127, 127, 127))
 	draw = ImageDraw.Draw(corr_image)
 	marker_data = []
+	mid = 0
 
 	for wall in map_data["walls"]:
 		dx = math.fabs(wall["p1"]["x"] - wall["p2"]["x"])
@@ -151,33 +152,40 @@ def construct_visual_marker_data(map_image, map_data, output, tx, ty, scale):
 				sm = (sp["x"] + incx * MARKER_DISTANCE * (i + 1), sp["y"] + incy * MARKER_DISTANCE * (i + 1))
 				mm.append(sm)
 				mi.append(si)
-
 		for idx, mpi in enumerate(mi):
 			mpm = mm[idx]
 			# Assume walls are vertical or horizontal for now
-						
+			
 			if dy < 0.3:
 				mpn = (mpi[0], mpi[1] +5)
 				if inbounds(corr_image, mpn):
 					nr,ng,nb,na = corr_image.getpixel(mpn)
 					if nr == 127:
-						marker_data.append({'wall' : NORTH, 'x': mpm[0], 'y': mpm[1]})
+						marker = {'id' : 'Marker%s' %mid, 'wall' : NORTH, 'x' : mpm[0], 'y' : mpm[1] + 0.1, 'translated' : True}
+						marker_data.append(marker)
+						mid = mid + 1
 				mps = (mpi[0], mpi[1]-5)
 				if inbounds(corr_image, mps):
 					sr,sg,sb,sa = corr_image.getpixel(mps)
 					if sr == 127:
-						marker_data.append({'wall' : SOUTH, 'x': mpm[0], 'y' : mpm[1]})
+						marker = {'id' : 'Marker%s' %mid, 'wall' : SOUTH, 'x' : mpm[0], 'y' : mpm[1] - 0.1, 'translated' : True}
+						marker_data.append(marker)
+						mid = mid + 1
 			elif dx < 0.3:
 				mpe = (mpi[0]+5, mpi[1])
 				mpw = (mpi[0]-5, mpi[1])
 				if inbounds(corr_image, mpe):
 					r,g,b,a = corr_image.getpixel(mpe)
 					if r == 127:
-						marker_data.append({'wall' : EAST, 'x': mpm[0], 'y': mpm[1]})
+						marker = {'id' : 'Marker%s' %mid, 'wall' : WEST, 'x' : mpm[0] + 0.05, 'y' : mpm[1], 'translated' : True}
+						marker_data.append(marker)
+						mid = mid + 1
 				if inbounds(corr_image, mpw):
 					r,g,b,a = corr_image.getpixel(mpw)
 					if r == 127:
-						marker_data.append({'wall' : WEST, 'x': mpm[0], 'y': mpm[1]})
+						marker = {'id' : 'Marker%s' %mid, 'wall' : EAST, 'x' : mpm[0] - 0.125, 'y' : mpm[1], 'translated' : True}
+						marker_data.append(marker)
+						mid = mid + 1
 			else:
 				print("Warning: wall is neither horizontal or vertical")
 				print(wall)
@@ -195,9 +203,10 @@ def draw_markers(scale, draw, md):
 		elif w == SOUTH:
 			r = [math.floor((tx + x) * scale) - 2, math.floor((ty + y) * scale) -4, math.floor((tx + x)* scale) + 2, math.floor((ty + y)*scale)]
 		elif w == EAST:
-			r = [math.floor((tx + x) * scale), math.floor((ty + y) * scale) - 2, math.floor((tx + x)* scale) + 4, math.floor((ty + y)*scale) + 2]
-		elif w == WEST:
 			r = [math.floor((tx + x) * scale - 4), math.floor((ty + y) * scale) -2, math.floor((tx + x)* scale), math.floor((ty + y)*scale)+2]
+		elif w == WEST:
+			r = [math.floor((tx + x) * scale), math.floor((ty + y) * scale) - 2, math.floor((tx + x)* scale) + 4, math.floor((ty + y)*scale) + 2]
+
 		draw.rectangle(r, fill='black')		
 
 args = process_args()
