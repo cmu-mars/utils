@@ -34,7 +34,8 @@ def models_sdf(topath, num):
     model = sdf.find('model')
     model.set('name', 'Marker%s' %num)
     uri = model.find("./link/visual/geometry/mesh/uri")
-    uri.text="model://marker%s/meshes/Marker%s.dae" %(num,num)
+    #uri.text="model://marker%s/meshes/Marker%s.dae" %(num,num)
+    uri.text="file:///%s/marker%s/meshes/Marker%s.dae" %(topath,num,num)
 
     root.write(topath + "/model.sdf")
 
@@ -63,7 +64,8 @@ def mesh(topath, num):
     image.set('id', 'Marker%s_png' %num)
     image.set('name', 'Marker%s_png' %num)
     init_from = image.find('init_from')
-    init_from.text = "marker%s.png" %num
+    #init_from.text = "marker%s.png" %num
+    init_from.text = "file:///%s/materials/textures/marker%s.png" %(topath,num)
 
     library_effects = COLLADA.find('library_effects')
     effect = library_effects.find('effect')
