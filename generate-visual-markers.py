@@ -12,6 +12,7 @@ import math
 def process_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--output', type=str, help='Write the new world to this file instead of overwriting "world"')
+    parser.add_argument('--really', action='store_true', help="Really use this script")
     parser.add_argument('world', type=str, help='The world file to update')
     parser.add_argument('data', type=str, help='The visual marker data')
     args = parser.parse_args()
@@ -75,7 +76,7 @@ def create_marker(mid, dom, marker_json, height):
     x = marker_json["x"]
     y = marker_json["y"]
     z = height
-    translate = "translated" not in keys or not marker_json["translated"]
+    translate = "translated" not in marker_json or not marker_json["translated"]
     w = 0
 
     if on_wall == "north":
@@ -89,11 +90,11 @@ def create_marker(mid, dom, marker_json, height):
     elif on_wall == "east":
         if translate:   
             x = x - 0.125
-        w = math.pi
+        w = 0
     elif on_wall == "west":
         if translate:
             x = x + 0.05
-        w = 0
+        w = math.pi
     else:
         print("Marker is not on a wall!?")
 
@@ -147,6 +148,9 @@ def load_json(filename):
 
 if __name__ == '__main__':
     args = process_args()
+    if not args.really:
+        print("This script is deprecated - markers are added dynamically to the world. Use --really to override.")
+        sys.exit()
 
     world_dom = parse(args.world)
     markers = load_json(args.data)
