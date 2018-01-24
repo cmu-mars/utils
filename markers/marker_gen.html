@@ -12,21 +12,43 @@
 	</head>
 	<body>
 		<div align=center>
-			<div id="links"></div>
+			<label for="start">Start id:</label>
+			<input type="text" id="start" size='6' value='0'/>
+			<lable for="end">End id:</lable>
+			<input type="tedxt" id="end" size="6" value='10'/>
+			<a id='generate' onclick='generateMarkers();' href="#">Generate</a> 
+			<a id='blob'>Download</a>
+
+
+
 			<div id="markers"></div>
 		</div>
 		<script type="text/javascript" src="cv.js"></script>
 		<script type="text/javascript" src="aruco.js"></script>
 		<script type="text/javascript" src="markers.js"></script>
+		<script type="text/javascript" src='jszip.min.js'></script>
 		<script type="text/javascript">
-			window.onload = function () {
+			function generateMarkers() {
 				var marker_size_mm = 500;
 				var marker_padding_mm = 0;
 				var error_str = "";
 
+				var generate = document.getElementById('generate');
+				generate.innerHTML = 'Generating...';
+
+				var bloblink = document.getElementById('blob');
+				bloblink.removeAttribute('href');
+
 				var div = document.getElementById("markers");
-				var links = document.getElementById("links");
-				for (var i = 128; i < 256; i++) {
+				while (div.firstChild) {
+					div.removeChild(div.firstChild)
+				}
+
+
+				start = parseInt(document.getElementById('start').value)
+				end = parseInt(document.getElementById('end').value)
+
+				for (var i = start; i < end; i++) {
 
 					canvas = makeMarker(i, marker_size_mm, marker_padding_mm);
 					var ctx = canvas.getContext('2d');
@@ -35,20 +57,42 @@
 					ctx.stroke();
 					div.appendChild(canvas);
 
-					link = document.createElement('a');
-					link.innerHTML = 'Marker' + i;
-					link.addEventListener('click', function(ev) {
+					// link = document.createElement('a');
+					// link.innerHTML = 'Marker' + i;
+					// link.addEventListener('click', function(ev) {
 
-						// canvas = makeMarker(i, marker_size_mm, marker_padding_mm);
-						// var ctx = canvas.getContext('2d');
-						// ctx.strokeStyle = 'black';
-						// ctx.rect(0,0,canvas.height,canvas.width);
-						// ctx.stroke();
-						link.href = canvas.toDataURL();
-						link.download = 'marker' + id + ".png";
-					}, false);
-					div.appendChild(link);
+					// 	// canvas = makeMarker(i, marker_size_mm, marker_padding_mm);
+					// 	// var ctx = canvas.getContext('2d');
+					// 	// ctx.strokeStyle = 'black';
+					// 	// ctx.rect(0,0,canvas.height,canvas.width);
+					// 	// ctx.stroke();
+					// 	link.href = canvas.toDataURL();
+					// 	link.download = 'marker' + id + ".png";
+					// }, false);
+					// div.appendChild(link);
 				}
+
+				downloadcanvasses(start, end);
+				generate.innerHTML="Generate";
+			}
+
+			function downloadcanvasses(start, end) {
+				var zip = JSZip();
+				var canvases = document.getElementsByTagName('canvas');
+				for (var i = 0; i < canvases.length; i++) {
+					var canvas = canvases[i];
+					var image=new Image();
+					image.src = canvas.toDataURL();
+					zip.file((start + i) + ".png", image.src.substr(image.src.indexOf(',')+1), {base64: true});
+				}
+				//var content = zip.generate();
+				zip.generateAsync({type:'blob'})
+				.then(function(content) {
+					var bloblink = document.getElementById('blob');
+
+					bloblink.download = "markers" + start + "-" + end + ".zip";
+					bloblink.href = window.URL.createObjectURL(content)
+				})
 			}
 
 		</script>
