@@ -90,7 +90,7 @@ SOUTH = "south"
 EAST = "east"
 WEST = "west"
 NORTH = "north"
-MARKER_DISTANCE = 3.0
+MARKER_DISTANCE = 2.0
 
 def construct_visual_marker_data(map_image, map_data, output, tx, ty, scale):
 	corr_image = map_image.copy()
@@ -123,28 +123,30 @@ def construct_visual_marker_data(map_image, map_data, output, tx, ty, scale):
 			ep = None
 			if dy < 0.3:
 				sp,ep = (wall["p1"],wall["p2"]) if wall["p1"]["x"] < wall["p2"]["x"] else (wall["p2"],wall["p1"])
-				si = (int(math.floor((tx + sp["x"] + 0.25) * scale)), int(math.floor((ty + sp["y"]) * scale)))
-				sm = (sp["x"] + 0.25, sp["y"])
+				si = (int(math.floor((tx + sp["x"] + 0.35) * scale)), int(math.floor((ty + sp["y"]) * scale)))
+				sm = (sp["x"] + 0.35, sp["y"])
 				mm.append(sm)
 				mi.append(si)
 
-				ei = (int(math.floor((tx + ep["x"] - 0.25)*scale)), int(math.floor((ty + ep["y"])*scale)))
-				em = (ep["x"] - 0.25, ep["y"])
+				ei = (int(math.floor((tx + ep["x"] - 0.35)*scale)), int(math.floor((ty + ep["y"])*scale)))
+				em = (ep["x"] - 0.35, ep["y"])
 				mm.append(em)
 				mi.append(ei)
 				incx = 1
 			elif dx < 0.3:
 				sp,ep = (wall["p1"],wall["p2"]) if wall["p1"]["y"] < wall["p2"]["y"] else (wall["p2"],wall["p1"])
-				si = (int(math.floor((tx + sp["x"]) * scale)), int(math.floor((ty + sp["y"] + 0.25) * scale)))
-				sm = (sp["x"], sp["y"] + 0.25)
+				si = (int(math.floor((tx + sp["x"]) * scale)), int(math.floor((ty + sp["y"] + 0.35) * scale)))
+				sm = (sp["x"], sp["y"] + 0.35)
 				mm.append(sm)
 				mi.append(si)
 
-				ei = (int(math.floor((tx + ep["x"])*scale)), int(math.floor((ty + ep["y"] - 0.25)*scale)))
-				em = (ep["x"], ep["y"] - 0.25)
+				ei = (int(math.floor((tx + ep["x"])*scale)), int(math.floor((ty + ep["y"] - 0.35)*scale)))
+				em = (ep["x"], ep["y"] - 0.35)
 				mm.append(em)
 				mi.append(ei)
 				incy = 1
+			else:
+				print ("Wall (%s,%s) (%s,%s) is neither vertical nor horizontal" %(wall["p1"]["x"],wall["p1"]["y"],wall["p2"]["x"],wall["p2"]["y"]))
 			# Now add them along the wall
 			for i in range(numMarkers):
 				si = (int(math.floor((tx + sp["x"] + incx * MARKER_DISTANCE * (i+1))*scale)), 
@@ -219,7 +221,7 @@ print ("transpose %s, %s size=%s %s" %(str(tx), str(ty), str(width), str(height)
 im = Image.new ('RGBA', (width * args.scale + args.line_width * args.scale, height*args.scale + args.line_width * args.scale), (255, 255, 255))
 draw = ImageDraw.Draw(im)
 
-draw_walls (draw, map_json, args.scale, args.line_width, tx, ty)
+draw_walls (draw, map_json, args.scale, int(math.ceil(0.15 * args.scale)), tx, ty)
 md = {}
 
 if args.visual_marker_data is not None:

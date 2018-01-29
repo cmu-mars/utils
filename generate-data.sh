@@ -24,7 +24,7 @@ if [ ! -d "$output" ]; then
 fi
 
 python generate-walls.py -o /tmp/wall-world.world $json $world && \
-python generate-lights.py -o $world $json /tmp/wall-world.world && \
+python generate-lights.py --output-world $world $json /tmp/wall-world.world && \
 python generate-ros-map.py -s 10 -l 1 -v $output/maps/markers.json -o $output/maps $data cp3
 
 rm /tmp/wall-world.world
