@@ -217,3 +217,5 @@ for wall in walls:
 with open(args.output, 'w') as f:
 	world_dom.writexml(f, indent='  ', addindent='  ', newl='\n')
 	world_dom.unlink()
+    
+

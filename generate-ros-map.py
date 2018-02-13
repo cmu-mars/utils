@@ -38,7 +38,7 @@ def get_map_bounding_box(map):
 
 def process_args():
 	parser = argparse.ArgumentParser()
-	parser.add_argument('-s', '--scale', type=int, default=1, help='The size of the image to scale to')
+	parser.add_argument('-s', '--scale', type=int, default=10, help='The size of the image to scale to')
 	parser.add_argument('-o', '--output_dir', help='The output directory for ROS map files')
 	parser.add_argument('map_data', help='The JSON map file to use to base the ROS map on')
 	parser.add_argument('ros_mapname', help='The prefix for map related ROS files')
@@ -160,6 +160,9 @@ def construct_visual_marker_data(map_image, map_data, output, tx, ty, scale):
 			
 			if dy < 0.3:
 				mpn = (mpi[0], mpi[1] +5)
+				print(mpn)
+				if (mpi[0] < 0 or mpi[0] > corr_image.width or mpi[1] + 5 > corr_image.height):
+					continue
 				if inbounds(corr_image, mpn):
 					nr,ng,nb,na = corr_image.getpixel(mpn)
 					if nr == 127:
