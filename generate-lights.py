@@ -1,4 +1,4 @@
-#! /user/bin/env python
+#! /usr/bin/env python
 '''
 Given a BRASS map defined in JSON, add lights to the world using
 either the waypoints in the map, or the lights defined by the map
@@ -57,26 +57,26 @@ def create_light(dom, light_json, xtrans, ytrans, for_world=True):
         light.appendChild(diffuse)
 
         specular = dom.createElement('specular')
-        specular.appendChild(dom.createTextNode("0.1 0.1 0.1 1"))
+        specular.appendChild(dom.createTextNode("0.5 0.5 0.5 1"))
         light.appendChild(specular)
 
         attenuation = dom.createElement ('attenuation')
         light.appendChild(attenuation)
 
         rangE = dom.createElement("range")
-        rangE.appendChild(dom.createTextNode("5"))
+        rangE.appendChild(dom.createTextNode("8"))
         attenuation.appendChild(rangE)
 
         constant = dom.createElement("constant")
-        constant.appendChild(dom.createTextNode("0.5"))
+        constant.appendChild(dom.createTextNode("0.25"))
         attenuation.appendChild(constant)
 
         linear = dom.createElement("linear")
-        linear.appendChild(dom.createTextNode("0.1"))
+        linear.appendChild(dom.createTextNode("0.0"))
         attenuation.appendChild(linear)
 
         quadratic = dom.createElement("quadratic")
-        quadratic.appendChild(dom.createTextNode("0.03"))
+        quadratic.appendChild(dom.createTextNode("0.00"))
         attenuation.appendChild(quadratic)
 
         cast = dom.createElement("cast_shadows")
@@ -105,10 +105,10 @@ args = parser.parse_args()
 args.map = os.path.expandvars(args.map)
 args.world = os.path.expandvars(args.world)
 
-if not hasattr(args, 'output_map'):
+if args.output_map is None:
 	args.output_map = args.map
 
-if not hasattr(args, 'output_world'):
+if args.output_world is None:
 	args.output_world = args.world
 
 #Check if input files exist
@@ -147,6 +147,10 @@ for node in world:
         if child.nodeName == "light":
             node.removeChild(child)
 
+# Set ambient light to dark
+scene = world_dom.getElementsByTagName("scene")[0];
+ambient = scene.getElementsByTagName("ambient")[0];
+ambient.firstChild.replaceWholeText ("0 0 0 1");
 
 # Add lights - only need to add to world
 for l in lights:
@@ -155,7 +159,8 @@ for l in lights:
 
 
 # output the new world
-world_dom.writexml(open(args.output_world, 'w'), indent='  ', addindent='  ', newl='\n')
+outfile = open(args.output_world, 'w')
+world_dom.writexml(outfile, indent='  ', addindent='  ')
 world_dom.unlink()
 
 if args.update_map:
