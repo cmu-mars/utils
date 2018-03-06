@@ -1,4 +1,4 @@
-#! /user/bin/env python
+#! /usr/bin/env python
 '''
 Given a BRASS map defined in JSON, add lights to the world using
 either the waypoints in the map, or the lights defined by the map
