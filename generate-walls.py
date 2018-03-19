@@ -199,6 +199,10 @@ models = world_dom.getElementsByTagName("model")
 
 (cur_wall_id, room_model) = process_world(models, args.append)
 
+# Walls assume that the room model is at -5 0 0 0 0 0, so make sure that is
+# the pose
+pose = room_model.getElementsByTagName("pose")[0]
+pose.firstChild.replaceWholeText("-5 0 0 0 0 0");
 
 map_json = load_map(args.map)
 
