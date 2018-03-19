@@ -47,8 +47,8 @@ db = {}
 
 wrong = 0
 right = 0
-for i in range(1, args.num_waypoints):
-    for j in range(1, args.num_waypoints):
+for i in range(1, args.num_waypoints+1):
+    for j in range(1, args.num_waypoints+1):
         if i != j:
             try:
                 path_info = load_path(i,j, args.dir)
