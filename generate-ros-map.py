@@ -46,6 +46,7 @@ def process_args():
 	parser.add_argument('-l' , '--line_width', type=int, default = 3, help='The width of wall lines')
 	parser.add_argument('-v', '--visual_marker_data', help='THe file to output marker data to')
 	parser.add_argument('-w', '--view', action='store_true', help="View the image (with markers) after processing")
+	parser.add_argument('-b', '--obstacles', action='store_true', help="Generate obstacles on the map")
 	args = parser.parse_args()
 
 	args.map_data = os.path.expandvars(args.map_data)
@@ -79,6 +80,16 @@ def draw_walls(draw, map, scale, line_width, tx, ty):
 			int(math.floor((tx + wall["p2"]["x"]) * scale)), int(math.floor((ty + wall["p2"]["y"]) * scale)))
 		draw.line (l, 
 			fill = 'black', width=line_width)
+
+def draw_obstacles(draw, map, scale, line_width, tx, ty):
+	obstacles = map["worldobstacles"]
+	for o in obstacles:
+		draw.rectangle(
+			[int(math.floor((tx + o["x"] - 0.2)*scale)),
+			int(math.floor((ty + o["y"] - 0.2)*scale)),
+			int(math.floor((tx + o["x"] + 0.2)*scale)),
+			int(math.floor((ty + o["y"] + 0.2)*scale))],
+			outline='black', fill='black')
 
 def is_horizontal(wall):
 	return math.fabs(wall["p1"]["y"] - wall["p2"].y) < 0.3
@@ -234,7 +245,13 @@ if args.visual_marker_data is not None:
 	with open(args.visual_marker_data, 'w') as vm:
 		json.dump(md, vm, indent=4)
 
+
+if args.obstacles:
+	draw_obstacles(draw, map_json, args.scale, int(math.ceil(0.15 * args.scale)), tx, ty)
+
 del draw
+
+
 
 vi = None
 
@@ -254,6 +271,7 @@ width, height = im.size
 im.save (args.output_dir + "/%s.png" %args.ros_mapname, "PNG")
 # Save map.yaml too
 with open(args.output_dir + "/%s.yaml" % args.ros_mapname, 'w') as mapfile:
+	print('# Generated with generate-ros-map.y %s' %sys.argv[1:], file=mapfile)
 	print('image: %s.png' %args.ros_mapname, file=mapfile)
 	print('resolution: %s' %float(1.0/args.scale), file=mapfile)
 	print('origin: [%s, %s, 0]' 
