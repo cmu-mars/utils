@@ -13,6 +13,7 @@ def process_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--output', type=str, help='Write the new world to this file instead of overwriting "world"')
     parser.add_argument('--really', action='store_true', help="Really use this script")
+    parser.add_argument("--max", "-m", type=int, help='The maximum number of markers to place')
     parser.add_argument('world', type=str, help='The world file to update')
     parser.add_argument('data', type=str, help='The visual marker data')
     args = parser.parse_args()
@@ -165,7 +166,7 @@ if __name__ == '__main__':
         vmm, vms = create_marker(mid, world_dom, marker, 0.75)
         mid = mid + 1
         world.appendChild(vmm)
-        if mid > 50:
+        if args.max is not None and args.max < mid:
              break
         #state.appendChild(vms)
 
